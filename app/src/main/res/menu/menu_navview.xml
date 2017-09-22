@@ -1,31 +1,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/menu_seccion_1"
-            android:icon="@drawable/ic_menu"
-            android:title="seccion_1"/>
-        <item
-            android:id="@+id/menu_seccion_2"
-            android:icon="@drawable/ic_menu"
-            android:title="seccion_2"/>
-        <item
-            android:id="@+id/menu_seccion_3"
-            android:icon="@drawable/ic_menu"
-            android:title="seccion_3"/>
+            android:id="@+id/menu_home"
+            android:icon="@drawable/ic_action_name"
+            android:title="Inicio"/>
     </group>
 
     <item
         android:id="@+id/navigation_subheader"
-        android:title="otras_opciones">
+        android:title="Mis intereses">
         <menu>
             <item
-                android:id="@+id/menu_opcion_1"
-                android:icon="@drawable/ic_menu"
-                android:title="opcion_1"/>
+                android:id="@+id/my_offers"
+                android:icon="@drawable/ic_radio_off"
+                android:title="@string/my_offers" />
             <item
-                android:id="@+id/menu_opcion_2"
-                android:icon="@drawable/ic_menu"
-                android:title="opcion_2"/>
+                android:id="@+id/my_posts"
+                android:icon="@drawable/ic_radio_off"
+                android:title="@string/my_posts" />
+            <item
+                android:id="@+id/my_products"
+                android:icon="@drawable/ic_radio_off"
+                android:title="@string/my_products" />
+            <item
+                android:id="@+id/my_requests"
+                android:icon="@drawable/ic_radio_off"
+                android:title="@string/my_requests" />
         </menu>
     </item>
 </menu>

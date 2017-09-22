@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">UN_trueque</string>
+
+    <string name="home">Inicio</string>
+    <string name="login">Ingresar</string>
+    <string name="my_offers">Mis ofertas</string>
+    <string name="my_posts">Mis publicaciones</string>
+    <string name="my_products">Mis productos y servicios</string>
+    <string name="my_requests">Mis peticiones</string>
+    <string name="username">E-mail</string>
+    <string name="password">Contraseña</string>
+
+    <string name="forgotten"><u>Olvide mi contraseña</u></string>
+    <string name="register">Registrarme</string>
+    <string name="register_u"><u>Registrarme</u></string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="facebook_app_id">[APP_ID]</string>
+    <string name="fb_login_protocol_scheme">fb[APP_ID]</string>
+
 </resources>
