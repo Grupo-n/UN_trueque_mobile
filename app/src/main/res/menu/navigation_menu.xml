@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:title="Principal"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/home"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/myoffers"
+            android:icon="@drawable/radio_button_off"
+            android:title="Mis ofertas" />
+
+        <item
+            android:id="@+id/myposts"
+            android:icon="@drawable/radio_button_off"
+            android:title="Mis publicaciones" />
+
+        <item
+            android:id="@+id/myproducts"
+            android:icon="@drawable/radio_button_off"
+            android:title="Mis productos" />
+
+        <item
+            android:id="@+id/myrequests"
+            android:icon="@drawable/radio_button_off"
+            android:title="Mis peticiones" />
+    </group>
+
+    <item
+        android:title="Mi cuenta"
+        android:checkableBehavior="single">
+        <menu
+            android:checkableBehavior="single">
+            <item
+                android:id="@+id/login"
+                android:icon="@drawable/quit_game"
+                android:title="Ingresar" />
+
+            <item
+                android:id="@+id/register"
+                android:icon="@drawable/quit_game"
+                android:title="Registrarse" />
+        </menu>
+    </item>
+
+</menu>

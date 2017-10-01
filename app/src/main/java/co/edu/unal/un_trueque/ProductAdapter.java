@@ -12,6 +12,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import co.edu.unal.un_trueque.R;
+import co.edu.unal.un_trueque.objects.Product;
+
 /**
  * Created by Jonathan on 9/22/2017.
  */

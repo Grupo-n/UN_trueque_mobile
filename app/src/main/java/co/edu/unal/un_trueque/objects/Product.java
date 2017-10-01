@@ -1,19 +1,23 @@
-package co.edu.unal.un_trueque;
+package co.edu.unal.un_trueque.objects;
+
+import java.io.Serializable;
 
 /**
  * Created by Jonathan on 9/22/2017.
  */
 
-public class Product {
+public class Product implements Serializable{
 
     private int img;
     private String name;
     private String type;
+    private String description;
 
-    public Product(int img, String name, String type) {
+    public Product(int img, String name, String type, String description) {
         this.img = img;
         this.name = name;
         this.type = type;
+        this.description = description;
     }
 
     public int getId(){
@@ -42,5 +46,13 @@ public class Product {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
