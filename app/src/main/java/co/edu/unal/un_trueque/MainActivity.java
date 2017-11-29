@@ -1,5 +1,6 @@
 package co.edu.unal.un_trueque;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,6 +22,8 @@ import co.edu.unal.un_trueque.fragments.RegisterFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +32,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+        id = intent.getStringExtra("id");
+
         if(savedInstanceState == null){
             Fragment fragment = null;
-            Class fragmentClass = null;
-            fragmentClass = CatalogueFragment.class;
             try{
-                fragment = (Fragment) fragmentClass.newInstance();
+                fragment = CatalogueFragment.newInstance(id);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -81,22 +86,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (item.getItemId()){
             case R.id.home:
-                fragmentClass = CatalogueFragment.class;
+                //fragmentClass = CatalogueFragment.class;
+                fragment = CatalogueFragment.newInstance(id);
                 break;
-            case R.id.login:
-                fragmentClass = LoginFragment.class;
-                break;
-            case R.id.register:
-                fragmentClass = RegisterFragment.class;
-                break;
+            case R.id.logout:
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                return true;
             default:
                 return true;
-        }
-
-        try{
-            fragment = (Fragment) fragmentClass.newInstance();
-        }catch (Exception e){
-            e.printStackTrace();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();

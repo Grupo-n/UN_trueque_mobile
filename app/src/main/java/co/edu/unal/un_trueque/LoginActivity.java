@@ -36,6 +36,13 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void launch(String id){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("id", id);
+        startActivity(intent);
+        finish();
+    }
+
 
     public void loginClick(View view){
         new LoginTask(view.getContext()).execute(email.getText().toString(), password.getText().toString());
@@ -96,6 +103,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 jsonString = stringBuffer.toString();
 
+                Log.e("AQUI", jsonString);
+
             }catch (Exception e){
 
                 Log.e("Login Activity: ", e.toString());
@@ -112,11 +121,13 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("Reader", e.toString());
                     }
 
+                JSONObject r;
                 try {
-                    return new JSONObject(jsonString);
+                    r = new JSONObject(jsonString);
                 } catch (JSONException e) {
-                    return null;
+                    return new JSONObject();
                 }
+                return r;
 
             }
 
@@ -126,13 +137,16 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(JSONObject s) {
 
             progressDialog.dismiss();
-
+            //Toast.makeText(context, "Login" + s.toString(), Toast.LENGTH_LONG).show();
             try {
+
                 String id = s.getString("id");
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("id", id);
-                startActivity(intent);
-                finish();
+                if(s.isNull("id"))
+                    Toast.makeText(context, "No coincide tu E-mail y Contraseña", Toast.LENGTH_LONG).show();
+                else
+                    launch(id);
+
+
             } catch (JSONException e) {
                 Toast.makeText(context, "No coincide tu E-mail y Contraseña", Toast.LENGTH_LONG).show();
             }

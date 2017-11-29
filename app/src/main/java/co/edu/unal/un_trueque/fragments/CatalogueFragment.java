@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,22 +36,36 @@ import co.edu.unal.un_trueque.objects.Product;
 
 public class CatalogueFragment extends Fragment {
 
+    private static final String ID = "ID";
+
+    private String id;
     private GridView gridView;
     private ProductAdapter productAdapter;
+
 
     public CatalogueFragment() {
     }
 
-    public static CatalogueFragment newInstance() {
+    public static CatalogueFragment newInstance(String id) {
         CatalogueFragment fragment = new CatalogueFragment();
+        Bundle args = new Bundle();
+        args.putString(ID, id);
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.id = getArguments().getString(ID);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_catalogue, container, false);
-
 
         List<Product> products = new ArrayList<>();
         /*
@@ -74,7 +90,7 @@ public class CatalogueFragment extends Fragment {
             }
         });
 
-        new ProductsTask(root.getContext()).execute("1");
+        new ProductsTask(root.getContext()).execute(id);
         
         return root;
     }

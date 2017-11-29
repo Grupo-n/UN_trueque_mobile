@@ -36,14 +36,9 @@
         <menu
             android:checkableBehavior="single">
             <item
-                android:id="@+id/login"
+                android:id="@+id/logout"
                 android:icon="@drawable/quit_game"
-                android:title="Ingresar" />
-
-            <item
-                android:id="@+id/register"
-                android:icon="@drawable/quit_game"
-                android:title="Registrarse" />
+                android:title="Salir" />
         </menu>
     </item>
 
