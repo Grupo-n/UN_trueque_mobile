@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,19 @@ import co.edu.unal.un_trueque.objects.Product;
 
 public class ProductDetailFragment extends Fragment {
 
+    private static final String ID = "ID";
     private static final String ARG_PARAM1 = "product";
 
+    private String id;
     private Product product;
 
     public ProductDetailFragment() {
     }
 
-    public static ProductDetailFragment newInstance(Product product) {
+    public static ProductDetailFragment newInstance(String id, Product product) {
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();
+        args.putString(ID, id);
         args.putSerializable(ARG_PARAM1, product);
         fragment.setArguments(args);
         return fragment;
@@ -39,7 +43,8 @@ public class ProductDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            product = (Product) getArguments().getSerializable(ARG_PARAM1);
+            this.id = getArguments().getString(ID);
+            this.product = (Product) getArguments().getSerializable(ARG_PARAM1);
         }
     }
 
@@ -57,6 +62,15 @@ public class ProductDetailFragment extends Fragment {
         text2.setText(product.getDescription());
 
         return root;
+    }
+
+    public void makeOffer(){
+        Fragment fragment = null;
+        fragment = OfferFragment.newInstance(id, product);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.flContent, fragment, "NewOffer");
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
 }

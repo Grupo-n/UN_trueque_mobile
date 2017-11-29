@@ -68,9 +68,9 @@ public class MyPostsFragment extends Fragment {
         gridView.setAdapter(productAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long iden) {
                 Product p = (Product) parent.getItemAtPosition(position);
-                Fragment fragment = ProductDetailFragment.newInstance(p);
+                Fragment fragment = ProductDetailFragment.newInstance(id, p);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
             }

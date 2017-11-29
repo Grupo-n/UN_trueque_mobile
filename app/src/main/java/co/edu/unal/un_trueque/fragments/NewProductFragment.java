@@ -2,9 +2,12 @@ package co.edu.unal.un_trueque.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,14 +35,17 @@ import java.util.List;
 import co.edu.unal.un_trueque.R;
 import co.edu.unal.un_trueque.objects.Product;
 
+import static android.app.Activity.RESULT_OK;
+
 public class NewProductFragment extends Fragment {
 
     private static final String ID = "ID";
     private static final List<String> list = Arrays.asList("Producto", "Servicio");
 
-    private String id;
-    private EditText name, description;
     private Spinner type;
+    private ImageView image;
+    private EditText name, description;
+    private String id, selectedImagePath;
 
     public NewProductFragment() {
     }
@@ -69,6 +76,8 @@ public class NewProductFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         type.setAdapter(adapter);
 
+        image = (ImageView) root.findViewById(R.id.imageProduct);
+
         name = (EditText) root.findViewById(R.id.nameProduct);
         description = (EditText) root.findViewById(R.id.descriptionEditText);
 
@@ -78,6 +87,24 @@ public class NewProductFragment extends Fragment {
     public void saveProduct(Context context){
         new NewProductTask(context).execute(name.getText().toString(), type.getSelectedItem().toString(),
                 description.getText().toString(), "1", id);
+    }
+
+    public void loadImage(Context context){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                Uri selectedImageUri = data.getData();
+                selectedImagePath = selectedImageUri.getPath();
+                System.out.println("Image Path : " + selectedImagePath);
+                image.setImageURI(selectedImageUri);
+            }
+        }
     }
 
     private class NewProductTask extends AsyncTask<String,Void,JSONObject>{

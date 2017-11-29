@@ -71,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.saveProduct(view.getContext());
     }
 
+    public void imageClick(View view){
+        NewProductFragment fragment = (NewProductFragment) getSupportFragmentManager().findFragmentById(R.id.flContent);
+        fragment.loadImage(view.getContext());
+    }
+
+    public void offertClick(View view){
+        ProductDetailFragment fragment = (ProductDetailFragment) getSupportFragmentManager().findFragmentById(R.id.flContent);
+        fragment.makeOffer();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
