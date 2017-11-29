@@ -10,24 +10,14 @@
             android:title="Home" />
 
         <item
-            android:id="@+id/myoffers"
-            android:icon="@drawable/radio_button_off"
-            android:title="Mis ofertas" />
-
-        <item
             android:id="@+id/myposts"
             android:icon="@drawable/radio_button_off"
             android:title="Mis publicaciones" />
 
         <item
-            android:id="@+id/myproducts"
+            android:id="@+id/myoffers"
             android:icon="@drawable/radio_button_off"
-            android:title="Mis productos" />
-
-        <item
-            android:id="@+id/myrequests"
-            android:icon="@drawable/radio_button_off"
-            android:title="Mis peticiones" />
+            android:title="Mis ofertas" />
     </group>
 
     <item

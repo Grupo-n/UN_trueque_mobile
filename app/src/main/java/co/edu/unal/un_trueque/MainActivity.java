@@ -13,10 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import co.edu.unal.un_trueque.fragments.CatalogueFragment;
 import co.edu.unal.un_trueque.fragments.LoginFragment;
+import co.edu.unal.un_trueque.fragments.MyPostsFragment;
+import co.edu.unal.un_trueque.fragments.NewProductFragment;
 import co.edu.unal.un_trueque.fragments.ProductDetailFragment;
 import co.edu.unal.un_trueque.fragments.RegisterFragment;
 
@@ -56,6 +59,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+
+    //Buttons
+    public void addClick(View view){
+        MyPostsFragment fragment = (MyPostsFragment) getSupportFragmentManager().findFragmentById(R.id.flContent);
+        fragment.createProduct();
+    }
+
+    public void acceptClick(View view){
+        NewProductFragment fragment = (NewProductFragment) getSupportFragmentManager().findFragmentById(R.id.flContent);
+        fragment.saveProduct(view.getContext());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -78,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         Fragment fragment = null;
@@ -86,8 +100,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (item.getItemId()){
             case R.id.home:
-                //fragmentClass = CatalogueFragment.class;
                 fragment = CatalogueFragment.newInstance(id);
+                break;
+            case R.id.myposts:
+                fragment = MyPostsFragment.newInstance(id);
                 break;
             case R.id.logout:
                 finish();

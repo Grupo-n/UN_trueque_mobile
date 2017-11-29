@@ -1,24 +1,21 @@
 package co.edu.unal.un_trueque.fragments;
 
-
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -28,25 +25,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import co.edu.unal.un_trueque.ProductAdapter;
 import co.edu.unal.un_trueque.R;
 import co.edu.unal.un_trueque.objects.Product;
 
-public class CatalogueFragment extends Fragment {
+public class NewProductFragment extends Fragment {
 
     private static final String ID = "ID";
+    private static final List<String> list = Arrays.asList("Producto", "Servicio");
 
     private String id;
-    private GridView gridView;
-    private ProductAdapter productAdapter;
+    private EditText name, description;
+    private Spinner type;
 
-    public CatalogueFragment() {
+    public NewProductFragment() {
     }
 
-    public static CatalogueFragment newInstance(String id) {
-        CatalogueFragment fragment = new CatalogueFragment();
+    public static NewProductFragment newInstance(String id) {
+        NewProductFragment fragment = new NewProductFragment();
         Bundle args = new Bundle();
         args.putString(ID, id);
         fragment.setArguments(args);
@@ -64,47 +62,57 @@ public class CatalogueFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_catalogue, container, false);
+        View root = inflater.inflate(R.layout.fragment_new_product, container, false);
 
-        productAdapter = new ProductAdapter(getContext(), new ArrayList<Product>());
-        gridView = (GridView) root.findViewById(R.id.gridView);
-        gridView.setAdapter(productAdapter);
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Product p = (Product) parent.getItemAtPosition(position);
-                Fragment fragment = ProductDetailFragment.newInstance(p);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-            }
-        });
+        type = (Spinner) root.findViewById(R.id.typeSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(root.getContext(), android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        type.setAdapter(adapter);
 
-        new ProductsTask(root.getContext()).execute(id);
-        
+        name = (EditText) root.findViewById(R.id.nameProduct);
+        description = (EditText) root.findViewById(R.id.descriptionEditText);
+
         return root;
     }
 
-    private class ProductsTask extends AsyncTask<String,Void,List<Product>>{
+    public void saveProduct(Context context){
+        new NewProductTask(context).execute(name.getText().toString(), type.getSelectedItem().toString(),
+                description.getText().toString(), "1", id);
+    }
+
+    private class NewProductTask extends AsyncTask<String,Void,JSONObject>{
 
         Context context;
+        ProgressDialog progressDialog;
 
-        public ProductsTask(Context context){
+        public NewProductTask(Context context){
             this.context = context;
         }
 
         @Override
-        protected List<Product> doInBackground(String... params) {
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Guardando producto...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            JSONArray jsonString = null;
+            String jsonString = null;
 
             try{
 
-                String mUrl = "http://www.procesosyoperaciones.com/untrueque.php?q=get_products";
+                String mUrl = "http://www.procesosyoperaciones.com/untrueque.php?q=create_product";
 
                 Uri buildUri = Uri.parse(mUrl).buildUpon()
-                        .appendQueryParameter("user", params[0])
+                        .appendQueryParameter("name", params[0])
+                        .appendQueryParameter("type", params[1])
+                        .appendQueryParameter("description", params[2])
+                        .appendQueryParameter("image", params[3])
+                        .appendQueryParameter("user", params[4])
                         .build();
 
                 URL url = new URL(buildUri.toString());
@@ -120,7 +128,7 @@ public class CatalogueFragment extends Fragment {
                 while((line = reader.readLine()) != null){
                     stringBuffer.append(line + "\n");
                 }
-                jsonString = new JSONArray(stringBuffer.toString());
+                jsonString = stringBuffer.toString();
 
             }catch (Exception e){
 
@@ -138,27 +146,25 @@ public class CatalogueFragment extends Fragment {
                         Log.e("Reader", e.toString());
                     }
 
+                JSONObject r = null;
                 try {
-                    List<Product> products = new ArrayList<>();
-                    for (int i = 0; i < jsonString.length(); i++) {
-                        JSONObject x = (JSONObject) jsonString.get(i);
-                        products.add(new Product(R.drawable.noimage, x.getString("name"), x.getString("type"), x.getString("description")));
-                    }
-                    return products;
+
+                    r = new JSONObject(jsonString);
+
                 }catch (Exception e){
-                    return null;
+                    Log.e("Casting to json", e.toString());
                 }
+
+                return r;
 
             }
 
         }
 
         @Override
-        protected void onPostExecute(List<Product> products) {
-            super.onPostExecute(products);
-            productAdapter = new ProductAdapter(context, products);
-            gridView.setAdapter(productAdapter);
-            productAdapter.notifyDataSetChanged();
+        protected void onPostExecute(JSONObject jsonObject) {
+            progressDialog.dismiss();
+            getFragmentManager().popBackStackImmediate();
         }
     }
 
