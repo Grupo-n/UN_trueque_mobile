@@ -5,14 +5,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -31,21 +31,26 @@ import co.edu.unal.un_trueque.ProductAdapter;
 import co.edu.unal.un_trueque.R;
 import co.edu.unal.un_trueque.objects.Product;
 
-public class MyPostsFragment extends Fragment {
+public class OffersReceivedFragment extends Fragment {
 
     private static final String ID = "ID";
+    private static final String PROD = "Producto";
 
     private String id;
+    private TextView name;
+    private Product product;
+    private ImageView image;
     private GridView gridView;
     private ProductAdapter productAdapter;
 
-    public MyPostsFragment() {
+    public OffersReceivedFragment() {
     }
 
-    public static MyPostsFragment newInstance(String id) {
-        MyPostsFragment fragment = new MyPostsFragment();
+    public static OffersReceivedFragment newInstance(String id, Product product) {
+        OffersReceivedFragment fragment = new OffersReceivedFragment();
         Bundle args = new Bundle();
         args.putString(ID, id);
+        args.putSerializable(PROD, product);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,13 +60,22 @@ public class MyPostsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.id = getArguments().getString(ID);
+            this.product = (Product) getArguments().getSerializable(PROD);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_my_posts, container, false);
+        View root = inflater.inflate(R.layout.fragment_offers_received, container, false);
+
+
+        final Context mContext = root.getContext();
+
+        name = (TextView) root.findViewById(R.id.nameImage);
+        name.setText(product.getName());
+
+        image = (ImageView) root.findViewById(R.id.productImage);
 
         productAdapter = new ProductAdapter(getContext(), new ArrayList<Product>());
         gridView = (GridView) root.findViewById(R.id.gridView);
@@ -69,36 +83,22 @@ public class MyPostsFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long iden) {
-                Product p = (Product) parent.getItemAtPosition(position);
-                Fragment fragment = OffersReceivedFragment.newInstance(id, p);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                //Product p = (Product) parent.getItemAtPosition(position);
+                //new OfferFragment.MakeOfferTask(mContext).execute(id, id, product.getId()+"", p.getId()+"", "");
+                //getFragmentManager().popBackStackImmediate();
             }
         });
+
+        new GetMyOffersTask(root.getContext()).execute(product.getId());
 
         return root;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        new GetProducts(getContext()).execute(id);
-    }
-
-    public void createProduct(){
-        Fragment fragment = null;
-        fragment = NewProductFragment.newInstance(id);
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.flContent, fragment, "NewProduct");
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-
-    private class GetProducts extends AsyncTask<String,Void,List<Product>>{
+    private class GetMyOffersTask extends AsyncTask<String,Void,List<Product>>{
 
         Context context;
 
-        public GetProducts(Context context){
+        public GetMyOffersTask(Context context){
             this.context = context;
         }
 
@@ -111,10 +111,10 @@ public class MyPostsFragment extends Fragment {
 
             try{
 
-                String mUrl = "http://www.procesosyoperaciones.com/untrueque.php?q=my_products";
+                String mUrl = "http://www.procesosyoperaciones.com/untrueque.php?q=get_offers";
 
                 Uri buildUri = Uri.parse(mUrl).buildUpon()
-                        .appendQueryParameter("user", params[0])
+                        .appendQueryParameter("idProduct", params[0])
                         .build();
 
                 URL url = new URL(buildUri.toString());
@@ -152,7 +152,7 @@ public class MyPostsFragment extends Fragment {
                     List<Product> products = new ArrayList<>();
                     for (int i = 0; i < jsonString.length(); i++) {
                         JSONObject x = (JSONObject) jsonString.get(i);
-                        products.add(new Product(R.drawable.noimage, x.getString("name"), x.getString("type"), x.getString("description"), x.getString("idProduct")));
+                        products.add(new Product(R.drawable.noimage, x.getString("name"), x.getString("type"), x.getString("description")));
                     }
                     return products;
                 }catch (Exception e){
@@ -166,12 +166,10 @@ public class MyPostsFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Product> products) {
             super.onPostExecute(products);
-
             productAdapter = new ProductAdapter(context, products);
             gridView.setAdapter(productAdapter);
             productAdapter.notifyDataSetChanged();
         }
     }
-
 
 }

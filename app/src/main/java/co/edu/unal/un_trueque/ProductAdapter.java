@@ -41,7 +41,7 @@ public class ProductAdapter extends BaseAdapter{
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getId();
+        return getItem(position).getName().hashCode();
     }
 
     @Override
